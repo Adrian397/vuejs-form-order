@@ -4,14 +4,28 @@
     <div class="preview">
       <div>
         <h3>Printing:</h3>
-        <img :src="randomImg" />
+        <img :src="currentImg" />
+        <div class="preview-buttons">
+          <button @click.prevent="handleGenerateNewImg">
+            Generate new printing
+          </button>
+          <button @click.prevent="handleGoBackward" v-if="previousImg">
+            Load previous printing
+          </button>
+          <button
+            @click.prevent="handleGoForward"
+            v-if="currentImg !== randomImg"
+          >
+            Go one forward
+          </button>
+        </div>
       </div>
       <div>
-        <h3>On t-shirt:</h3>
+        <h3>T-shirt preview:</h3>
         <div class="preview-tshirt">
           <img :src="require('@/assets/t-shirt.png')" />
-          <img :src="randomImg" v-show="isFront" />
-          <img :src="randomImg" v-show="isBack" />
+          <img :src="currentImg" v-show="isFront" />
+          <img :src="currentImg" v-show="isBack" />
         </div>
       </div>
     </div>
@@ -28,6 +42,42 @@ export default Vue.extend({
     isFront: Boolean,
     isBack: Boolean,
     randomImg: String,
+    handleRefetch: Function,
+  },
+  data() {
+    return {
+      currentImg: this.randomImg,
+      previousImg: "",
+    };
+  },
+
+  watch: {
+    randomImg(newVal: string) {
+      this.currentImg = newVal;
+    },
+  },
+
+  methods: {
+    handleGenerateNewImg() {
+      this.previousImg = this.currentImg;
+      this.handleRefetch();
+      this.currentImg = this.randomImg;
+    },
+    handleGoBackward() {
+      if (this.previousImg) {
+        this.currentImg = this.previousImg;
+        this.previousImg = "";
+      }
+    },
+    handleGoForward() {
+      if (this.currentImg !== this.randomImg) {
+        this.previousImg = this.currentImg;
+        this.currentImg = this.randomImg;
+      }
+    },
+    onPrintingValueChange() {
+      this.$emit("update:printing", this.currentImg);
+    },
   },
 });
 </script>
@@ -35,14 +85,14 @@ export default Vue.extend({
 <style scoped lang="scss">
 .second-step {
   h1 {
-    color: #30bd30;
+    color: #333;
     font-size: 48px;
     margin-bottom: 1rem;
   }
 
   h3 {
     color: #333;
-    font-weight: bold;
+    font-weight: 500;
     margin-bottom: 0.5rem;
   }
 }
@@ -53,6 +103,33 @@ export default Vue.extend({
 
   & > div {
     margin-bottom: 1rem;
+
+    img {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+.preview-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  button {
+    font-weight: bold;
+    color: white;
+    border-color: transparent;
+    padding: 0.1rem 0.3rem;
+    width: 160px;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+
+  button:nth-of-type(1) {
+    background-color: #ec9b20;
+  }
+  button:nth-of-type(2) {
+    background-color: crimson;
   }
 }
 

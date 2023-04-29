@@ -2,21 +2,25 @@
   <form>
     <FirstStep
       :step="step"
-      :isFront="firstStep.isFront"
-      :isBack="firstStep.isBack"
+      :isFront="form.isFront"
+      :isBack="form.isBack"
       :randomImg="randomImg"
-      @update:isFront="onIsFrontUpdate"
-      @update:isBack="onIsBackUpdate"
+      @update:isFront="onIsFrontValueUpdate"
+      @update:isBack="onIsBackValueUpdate"
     />
     <SecondStep
       :step="step"
-      :isFront="firstStep.isFront"
-      :isBack="firstStep.isBack"
+      :isFront="form.isFront"
+      :isBack="form.isBack"
       :randomImg="randomImg"
+      :handleRefetch="refetchRandomImg"
     />
-    <section v-if="step === 2">
-      <h2>Step 3</h2>
-    </section>
+    <ThirdStep
+      :step="step"
+      :billing="form.billing"
+      @update:billing="onBillingValueUpdate"
+    />
+    <FourthStep :step="step" :form="form" />
     <button
       class="btn btn-prev"
       v-if="step !== 0"
@@ -26,22 +30,30 @@
     </button>
     <button
       class="btn btn-next"
-      v-if="step !== totalSteps"
       @click.prevent="handleNextStep"
+      v-if="step !== 3"
     >
-      Next step
+      {{ nextStepText }}
     </button>
-    <button class="btn btn-checkout" v-if="step === totalSteps">
-      Proceed to checkout
+    <button
+      class="btn btn-next"
+      v-if="step === 3"
+      @click.prevent="handleSubmitOrder"
+    >
+      Submit order
     </button>
   </form>
 </template>
 
 <script lang="ts">
+import { paths } from "@/utils/paths";
 import { useQuery } from "@tanstack/vue-query";
 import Vue from "vue";
 import FirstStep from "./FirstStep/FirstStep.vue";
+import FourthStep from "./FourthStep/FourthStep.vue";
 import SecondStep from "./SecondStep/SecondStep.vue";
+import { BillingInfo } from "./ThirdStep/ThirdStep.utils";
+import ThirdStep from "./ThirdStep/ThirdStep.vue";
 
 const fetchRandomImg = async () => {
   const response = await fetch("https://picsum.photos/150");
@@ -55,23 +67,52 @@ export default Vue.extend({
   components: {
     FirstStep,
     SecondStep,
+    ThirdStep,
+    FourthStep,
   },
   data() {
     return {
       step: 0,
-      totalSteps: 2,
-      firstStep: {
+      totalSteps: 3,
+      form: {
         isFront: false,
         isBack: false,
+        printing: "",
+        billing: {
+          name: "",
+          surname: "",
+          street: "",
+          buildingNumber: "",
+          apartmentNumber: "",
+          postalCode: "",
+          city: "",
+          phone: "",
+          email: "",
+        },
       },
     };
   },
   setup() {
-    const { data: randomImg } = useQuery(["randomImage"], fetchRandomImg, {
-      refetchOnWindowFocus: false,
-    });
+    const { data: randomImg, refetch: refetchRandomImg } = useQuery(
+      ["randomImage"],
+      fetchRandomImg,
+      {
+        refetchOnWindowFocus: false,
+      }
+    );
 
-    return { randomImg };
+    return { randomImg, refetchRandomImg };
+  },
+  computed: {
+    nextStepText(): string {
+      return this.step === 0
+        ? "Next step"
+        : this.step === 1
+        ? "Proceed to checkout"
+        : this.step === 2
+        ? "Go to summary"
+        : "";
+    },
   },
   watch: {
     "firstStep.isFront"(newVal) {
@@ -88,11 +129,19 @@ export default Vue.extend({
     handleNextStep() {
       this.step++;
     },
-    onIsFrontUpdate(value: boolean) {
-      this.firstStep.isFront = value;
+    onIsFrontValueUpdate(value: boolean) {
+      this.form.isFront = value;
     },
-    onIsBackUpdate(value: boolean) {
-      this.firstStep.isBack = value;
+    onIsBackValueUpdate(value: boolean) {
+      this.form.isBack = value;
+    },
+    onBillingValueUpdate(updatedBilling: BillingInfo) {
+      this.form.billing = updatedBilling;
+    },
+    handleSubmitOrder() {
+      console.log(this.form);
+      localStorage.setItem("form", JSON.stringify(this.form));
+      this.$router.replace(paths.summary);
     },
   },
 });

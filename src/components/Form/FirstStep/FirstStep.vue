@@ -58,15 +58,15 @@ export default Vue.extend({
 <style scoped lang="scss">
 .first-step {
   h1 {
-    color: #30bd30;
+    color: #333;
     font-size: 48px;
     margin-bottom: 1rem;
   }
 
   p {
     font-size: 24px;
-    color: #333;
-    font-weight: bold;
+    color: #524f4f;
+    font-weight: 500;
     margin-bottom: 1rem;
   }
 
@@ -88,7 +88,7 @@ export default Vue.extend({
 
   h3 {
     color: #333;
-    font-weight: bold;
+    font-weight: 500;
     margin-bottom: 0.5rem;
   }
 
