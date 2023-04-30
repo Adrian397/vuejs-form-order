@@ -1,8 +1,11 @@
-import { BillingInfo } from "../ThirdStep/ThirdStep.utils";
-
-export type SummaryType = {
-  isFront: boolean;
-  isBack: boolean;
-  printing: string;
-  billing: BillingInfo;
+export type BillingInfoType = {
+  name: string;
+  surname: string;
+  street: string;
+  buildingNumber: string;
+  apartmentNumber: string;
+  postalCode: string;
+  city: string;
+  phone: string;
+  email: string;
 };

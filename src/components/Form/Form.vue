@@ -14,13 +14,15 @@
       :isBack="form.isBack"
       :randomImg="randomImg"
       :handleRefetch="refetchRandomImg"
+      ref="imgRef"
     />
-    <ThirdStep
+    <ThirdStep :step="step" :form="form" />
+    <FourthStep
       :step="step"
-      :billing="form.billing"
+      :form="form"
       @update:billing="onBillingValueUpdate"
     />
-    <FourthStep :step="step" :form="form" />
+    <FifthStep :step="step" :form="form" />
     <button
       class="btn btn-prev"
       v-if="step !== 0"
@@ -49,10 +51,11 @@
 import { paths } from "@/utils/paths";
 import { useQuery } from "@tanstack/vue-query";
 import Vue from "vue";
+import FifthStep from "./FifthStep/FifthStep.vue";
 import FirstStep from "./FirstStep/FirstStep.vue";
+import { BillingInfoType } from "./FourthStep/FourthStep.utils";
 import FourthStep from "./FourthStep/FourthStep.vue";
 import SecondStep from "./SecondStep/SecondStep.vue";
-import { BillingInfo } from "./ThirdStep/ThirdStep.utils";
 import ThirdStep from "./ThirdStep/ThirdStep.vue";
 
 const fetchRandomImg = async () => {
@@ -69,11 +72,12 @@ export default Vue.extend({
     SecondStep,
     ThirdStep,
     FourthStep,
+    FifthStep,
   },
   data() {
     return {
       step: 0,
-      totalSteps: 3,
+      totalSteps: 4,
       form: {
         isFront: false,
         isBack: false,
@@ -108,8 +112,10 @@ export default Vue.extend({
       return this.step === 0
         ? "Next step"
         : this.step === 1
-        ? "Proceed to checkout"
+        ? "Next step"
         : this.step === 2
+        ? "Proceed to checkout"
+        : this.step === 3
         ? "Go to summary"
         : "";
     },
@@ -127,6 +133,11 @@ export default Vue.extend({
       this.step--;
     },
     handleNextStep() {
+      if (this.step === 1 && this.$refs.imgRef) {
+        this.form.printing = (
+          this.$refs.imgRef as Vue & { currentImg: string }
+        ).currentImg;
+      }
       this.step++;
     },
     onIsFrontValueUpdate(value: boolean) {
@@ -135,8 +146,11 @@ export default Vue.extend({
     onIsBackValueUpdate(value: boolean) {
       this.form.isBack = value;
     },
-    onBillingValueUpdate(updatedBilling: BillingInfo) {
+    onBillingValueUpdate(updatedBilling: BillingInfoType) {
       this.form.billing = updatedBilling;
+    },
+    onPrintingValueUpdate(value: string) {
+      this.form.printing = value;
     },
     handleSubmitOrder() {
       console.log(this.form);

@@ -22,21 +22,25 @@
       </div>
       <div>
         <h3>T-shirt preview:</h3>
-        <div class="preview-tshirt">
-          <img :src="require('@/assets/t-shirt.png')" />
-          <img :src="currentImg" v-show="isFront" />
-          <img :src="currentImg" v-show="isBack" />
-        </div>
+        <TshirtPreview
+          :printing="currentImg"
+          :isFront="isFront"
+          :isBack="isBack"
+        />
       </div>
     </div>
   </section>
 </template>
 
 <script lang="ts">
+import TshirtPreview from "@/components/TshirtPreview/TshirtPreview.vue";
 import Vue from "vue";
 
 export default Vue.extend({
-  name: "FormSecondStep",
+  name: "FormSecondStepComponent",
+  components: {
+    TshirtPreview,
+  },
   props: {
     step: Number,
     isFront: Boolean,
@@ -74,9 +78,6 @@ export default Vue.extend({
         this.previousImg = this.currentImg;
         this.currentImg = this.randomImg;
       }
-    },
-    onPrintingValueChange() {
-      this.$emit("update:printing", this.currentImg);
     },
   },
 });
@@ -130,22 +131,6 @@ export default Vue.extend({
   }
   button:nth-of-type(2) {
     background-color: crimson;
-  }
-}
-
-.preview-tshirt {
-  position: relative;
-  img:nth-of-type(2) {
-    width: 80px;
-    position: absolute;
-    top: 5rem;
-    left: 6rem;
-  }
-  img:nth-of-type(3) {
-    width: 80px;
-    position: absolute;
-    top: 5rem;
-    right: 6rem;
   }
 }
 </style>

@@ -1,32 +1,52 @@
 <template>
-  <div class="summary">
-    <h2>Summary</h2>
-    <p>
-      <span>Place of the printing:</span> {{ placeOfThePrinting }} of the shirt
-    </p>
-    <p>BILLING INFORMATION:</p>
-    <ul>
-      <li><span>Name:</span> {{ form.billing.name }}</li>
-      <li><span>Surname:</span> {{ form.billing.surname }}</li>
-      <li><span>Street:</span> {{ form.billing.street }}</li>
-      <li><span>Building number:</span> {{ form.billing.buildingNumber }}</li>
-      <li><span>Apartment number:</span> {{ form.billing.apartmentNumber }}</li>
-      <li><span>Postal code:</span> {{ form.billing.postalCode }}</li>
-      <li><span>City:</span> {{ form.billing.city }}</li>
-      <li><span>Phone:</span> {{ form.billing.phone }}</li>
-      <li><span>E-mail:</span> {{ form.billing.email }}</li>
-    </ul>
+  <div class="summary-wrapper">
+    <div class="summary">
+      <div>
+        <h2>Summary</h2>
+        <p>
+          <span>Place of the printing:</span> {{ placeOfThePrinting }} of the
+          shirt
+        </p>
+        <p>BILLING INFORMATION:</p>
+        <ul>
+          <li><span>Name:</span> {{ form.billing.name }}</li>
+          <li><span>Surname:</span> {{ form.billing.surname }}</li>
+          <li><span>Street:</span> {{ form.billing.street }}</li>
+          <li>
+            <span>Building number:</span> {{ form.billing.buildingNumber }}
+          </li>
+          <li>
+            <span>Apartment number:</span> {{ form.billing.apartmentNumber }}
+          </li>
+          <li><span>Postal code:</span> {{ form.billing.postalCode }}</li>
+          <li><span>City:</span> {{ form.billing.city }}</li>
+          <li><span>Phone:</span> {{ form.billing.phone }}</li>
+          <li><span>E-mail:</span> {{ form.billing.email }}</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <TshirtPreview
+        :printing="form.printing"
+        :isFront="form.isFront"
+        :isBack="form.isBack"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
+import TshirtPreview from "@/components/TshirtPreview/TshirtPreview.vue";
 import Vue, { PropType } from "vue";
-import { SummaryType } from "../FourthStep/FourthStep.utils";
+import { FormType } from "../FifthStep/FifthStep.utils";
 
 export default Vue.extend({
-  name: "FourthFormStep",
+  name: "SummaryComponent",
+  components: {
+    TshirtPreview,
+  },
   props: {
-    form: Object as PropType<SummaryType>,
+    form: Object as PropType<FormType>,
   },
   computed: {
     placeOfThePrinting(): string {
@@ -41,6 +61,9 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="scss">
+.summary-wrapper {
+  display: flex;
+}
 .summary {
   width: 25rem;
   background-color: rgb(233, 232, 232);

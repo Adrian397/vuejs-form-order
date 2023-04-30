@@ -1,13 +1,13 @@
 <template>
   <div class="wrapper" v-if="Object.keys(parsedForm).length > 0">
-    <h1>Your order has been placed!</h1>
+    <h1>Thank you, your order has been placed!</h1>
     <Summary :form="parsedForm" />
     <button @click="handleBackToHomePage">Go to home page</button>
   </div>
 </template>
 
 <script lang="ts">
-import { SummaryType } from "@/components/Form/FourthStep/FourthStep.utils";
+import { FormType } from "@/components/Form/FifthStep/FifthStep.utils";
 import Summary from "@/components/Form/Summary/Summary.vue";
 import { paths } from "@/utils/paths";
 import Vue from "vue";
@@ -19,7 +19,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      parsedForm: {} as SummaryType,
+      parsedForm: {} as FormType,
     };
   },
 

@@ -31,7 +31,7 @@
 import Vue from "vue";
 
 export default Vue.extend({
-  name: "FormFirstStep",
+  name: "FormFirstStepComponent",
   props: {
     step: Number,
     isFront: Boolean,
