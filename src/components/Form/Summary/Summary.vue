@@ -28,8 +28,8 @@
     <div>
       <TshirtPreview
         :printing="form.printing"
-        :isFront="form.isFront"
-        :isBack="form.isBack"
+        :isFront="form.printing.isFront"
+        :isBack="form.printing.isBack"
       />
     </div>
   </div>
@@ -50,9 +50,9 @@ export default Vue.extend({
   },
   computed: {
     placeOfThePrinting(): string {
-      return this.form.isFront && this.form.isBack
+      return this.form.printing.isFront && this.form.printing.isBack
         ? "front and back"
-        : this.form.isFront
+        : this.form.printing.isFront
         ? "front"
         : "back";
     },

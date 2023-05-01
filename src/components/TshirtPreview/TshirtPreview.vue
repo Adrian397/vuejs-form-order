@@ -1,8 +1,8 @@
 <template>
   <div class="preview-tshirt">
     <img :src="require('@/assets/t-shirt.png')" />
-    <img :src="printing" v-show="isFront" />
-    <img :src="printing" v-show="isBack" />
+    <img :src="url" v-show="isFront" />
+    <img :src="url" v-show="isBack" />
   </div>
 </template>
 
@@ -12,7 +12,7 @@ import Vue from "vue";
 export default Vue.extend({
   name: "TshirtPreviewComponent",
   props: {
-    printing: String,
+    url: String,
     isFront: Boolean,
     isBack: Boolean,
   },

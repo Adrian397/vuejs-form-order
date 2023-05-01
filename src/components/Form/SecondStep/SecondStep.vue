@@ -1,5 +1,5 @@
 <template>
-  <section class="second-step" v-if="step === 1">
+  <section class="second-step">
     <h1>Choose the printing...</h1>
     <div class="preview">
       <div>
@@ -22,11 +22,7 @@
       </div>
       <div>
         <h3>T-shirt preview:</h3>
-        <TshirtPreview
-          :printing="currentImg"
-          :isFront="isFront"
-          :isBack="isBack"
-        />
+        <TshirtPreview :url="currentImg" :isFront="isFront" :isBack="isBack" />
       </div>
     </div>
   </section>
@@ -42,7 +38,6 @@ export default Vue.extend({
     TshirtPreview,
   },
   props: {
-    step: Number,
     isFront: Boolean,
     isBack: Boolean,
     randomImg: String,

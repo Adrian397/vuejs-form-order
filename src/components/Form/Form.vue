@@ -1,28 +1,32 @@
 <template>
   <form>
     <FirstStep
-      :step="step"
-      :isFront="form.isFront"
-      :isBack="form.isBack"
+      :isFront="form.printing.isFront"
+      :isBack="form.printing.isBack"
       :randomImg="randomImg"
       @update:isFront="onIsFrontValueUpdate"
       @update:isBack="onIsBackValueUpdate"
+      v-if="step === 0"
     />
     <SecondStep
-      :step="step"
-      :isFront="form.isFront"
-      :isBack="form.isBack"
+      :isFront="form.printing.isFront"
+      :isBack="form.printing.isBack"
       :randomImg="randomImg"
       :handleRefetch="refetchRandomImg"
       ref="imgRef"
+      v-if="step === 1"
     />
-    <ThirdStep :step="step" :form="form" />
+    <ThirdStep
+      :form="form"
+      v-if="step === 2"
+      @update:style="onPrintingStyleUpdate"
+    />
     <FourthStep
-      :step="step"
       :form="form"
       @update:billing="onBillingValueUpdate"
+      v-if="step === 3"
     />
-    <FifthStep :step="step" :form="form" />
+    <FifthStep :form="form" v-if="step === 4" />
     <button
       class="btn btn-prev"
       v-if="step !== 0"
@@ -48,22 +52,17 @@
 </template>
 
 <script lang="ts">
+import { apiService } from "@/api/apiService";
 import { paths } from "@/utils/paths";
 import { useQuery } from "@tanstack/vue-query";
 import Vue from "vue";
+import { UpdateStyleType } from "./FifthStep/FifthStep.utils";
 import FifthStep from "./FifthStep/FifthStep.vue";
 import FirstStep from "./FirstStep/FirstStep.vue";
 import { BillingInfoType } from "./FourthStep/FourthStep.utils";
 import FourthStep from "./FourthStep/FourthStep.vue";
 import SecondStep from "./SecondStep/SecondStep.vue";
 import ThirdStep from "./ThirdStep/ThirdStep.vue";
-
-const fetchRandomImg = async () => {
-  const response = await fetch("https://picsum.photos/150");
-  const blob = await response.blob();
-
-  return URL.createObjectURL(blob);
-};
 
 export default Vue.extend({
   name: "FormComponent",
@@ -79,9 +78,15 @@ export default Vue.extend({
       step: 0,
       totalSteps: 4,
       form: {
-        isFront: false,
-        isBack: false,
-        printing: "",
+        printing: {
+          isFront: false,
+          isBack: false,
+          url: "",
+          style: {
+            type: "normal",
+            blurValue: 1,
+          },
+        },
         billing: {
           name: "",
           surname: "",
@@ -99,7 +104,7 @@ export default Vue.extend({
   setup() {
     const { data: randomImg, refetch: refetchRandomImg } = useQuery(
       ["randomImage"],
-      fetchRandomImg,
+      apiService.fetchRandomImg,
       {
         refetchOnWindowFocus: false,
       }
@@ -120,37 +125,37 @@ export default Vue.extend({
         : "";
     },
   },
-  watch: {
-    "firstStep.isFront"(newVal) {
-      console.log("isFront value changed:", newVal);
-    },
-    "firstStep.isBack"(newVal) {
-      console.log("isBack value changed:", newVal);
-    },
-  },
+
   methods: {
     handlePreviousStep() {
       this.step--;
     },
     handleNextStep() {
       if (this.step === 1 && this.$refs.imgRef) {
-        this.form.printing = (
+        this.form.printing.url = (
           this.$refs.imgRef as Vue & { currentImg: string }
         ).currentImg;
       }
       this.step++;
     },
     onIsFrontValueUpdate(value: boolean) {
-      this.form.isFront = value;
+      this.form.printing.isFront = value;
     },
     onIsBackValueUpdate(value: boolean) {
-      this.form.isBack = value;
+      this.form.printing.isBack = value;
     },
     onBillingValueUpdate(updatedBilling: BillingInfoType) {
       this.form.billing = updatedBilling;
     },
-    onPrintingValueUpdate(value: string) {
-      this.form.printing = value;
+    onPrintingStyleUpdate(value: UpdateStyleType) {
+      this.form.printing = {
+        ...this.form.printing,
+        url: value.url,
+        style: {
+          type: value.type,
+          blurValue: value.blurValue ?? 1,
+        },
+      };
     },
     handleSubmitOrder() {
       console.log(this.form);

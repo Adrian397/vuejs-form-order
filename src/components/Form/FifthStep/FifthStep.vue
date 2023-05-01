@@ -1,5 +1,5 @@
 <template>
-  <section class="fourth-step" v-if="step === 4">
+  <section>
     <Summary :form="form" />
   </section>
 </template>
@@ -15,7 +15,6 @@ export default Vue.extend({
     Summary,
   },
   props: {
-    step: Number,
     form: Object as PropType<FormType>,
   },
 });

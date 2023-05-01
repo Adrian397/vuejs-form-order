@@ -1,5 +1,5 @@
 <template>
-  <section class="third-step" v-if="step === 3">
+  <section class="fourth-step">
     <div>
       <div class="input-container">
         <label for="name">Name: <span>*</span></label>
@@ -82,9 +82,9 @@
     </div>
     <div>
       <TshirtPreview
-        :printing="form.printing"
-        :isFront="form.isFront"
-        :isBack="form.isBack"
+        :url="form.printing.url"
+        :isFront="form.printing.isFront"
+        :isBack="form.printing.isBack"
       />
     </div>
   </section>
@@ -101,9 +101,9 @@ export default Vue.extend({
     TshirtPreview,
   },
   props: {
-    step: Number,
     form: Object as PropType<FormType>,
   },
+
   methods: {
     onBillingChange(key: string, event: Event) {
       const updatedBilling = {
@@ -117,7 +117,7 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="scss">
-.third-step {
+.fourth-step {
   margin-bottom: 2rem;
   display: flex;
 }

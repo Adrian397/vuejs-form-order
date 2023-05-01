@@ -1,7 +1,7 @@
 <template>
-  <section class="first-step" v-if="step === 0">
+  <section class="first-step">
     <h1>What should be the place of the printing?</h1>
-    <p>You can either choose one or both places</p>
+    <p>You can either choose one or both options</p>
     <div>
       <div>
         <label for="front">Front of the shirt</label>
