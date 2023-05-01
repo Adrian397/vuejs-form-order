@@ -27,7 +27,7 @@
     </div>
     <div>
       <TshirtPreview
-        :printing="form.printing"
+        :url="form.printing.url"
         :isFront="form.printing.isFront"
         :isBack="form.printing.isBack"
       />
