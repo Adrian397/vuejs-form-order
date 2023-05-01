@@ -31,7 +31,8 @@
 
 <script lang="ts">
 import TshirtPreview from "@/components/TshirtPreview/TshirtPreview.vue";
-import Vue from "vue";
+import Vue, { PropType } from "vue";
+import { FormType } from "../FifthStep/FifthStep.utils";
 
 export default Vue.extend({
   name: "FormSecondStepComponent",
@@ -44,6 +45,7 @@ export default Vue.extend({
     price: Number,
     randomImg: String,
     handleRefetch: Function,
+    form: Object as PropType<FormType>,
   },
   data() {
     return {
@@ -63,17 +65,20 @@ export default Vue.extend({
       this.previousImg = this.currentImg;
       this.handleRefetch();
       this.currentImg = this.randomImg;
+      // this.$emit("update:url", this.currentImg);
     },
     handleGoBackward() {
       if (this.previousImg) {
         this.currentImg = this.previousImg;
         this.previousImg = "";
+        // this.$emit("update:url", this.currentImg);
       }
     },
     handleGoForward() {
       if (this.currentImg !== this.randomImg) {
         this.previousImg = this.currentImg;
         this.currentImg = this.randomImg;
+        // this.$emit("update:url", this.currentImg);
       }
     },
   },

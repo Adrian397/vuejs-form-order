@@ -48,12 +48,12 @@
     <div class="printing">
       <div>
         <h3>Printing:</h3>
-        <img :src="specificImg" />
+        <img :src="form.printing.url" />
       </div>
       <div>
         <h3>T-shirt preview:</h3>
         <TshirtPreview
-          :url="specificImg"
+          :url="form.printing.url"
           :isFront="form.printing.isFront"
           :isBack="form.printing.isBack"
         />
@@ -67,7 +67,7 @@
 import { apiService } from "@/api/apiService";
 import TshirtPreview from "@/components/TshirtPreview/TshirtPreview.vue";
 import { useQuery } from "@tanstack/vue-query";
-import Vue, { PropType, ref } from "vue";
+import Vue, { PropType, onUnmounted, ref } from "vue";
 import { FormType } from "../FifthStep/FifthStep.utils";
 
 export default Vue.extend({
@@ -76,17 +76,18 @@ export default Vue.extend({
     form: Object as PropType<FormType>,
     price: Number,
   },
+  components: { TshirtPreview },
+
   setup({ form }, { emit }) {
     const selectedStyleType = ref(form.printing.style.type);
     const blurValue = ref(form.printing.style.blurValue);
 
     const url = form.printing.url;
-    console.log(url);
     const idMatch = url.match(/\/id\/(\d+)\//);
     const id = idMatch ? idMatch[1] : null;
 
     const { data: specificImg, refetch: refetchSpecificImg } = useQuery(
-      ["specificImg", id, selectedStyleType.value, blurValue.value],
+      ["specificImg"],
       () =>
         apiService.fetchSpecificImg(
           id,
@@ -105,9 +106,15 @@ export default Vue.extend({
         blurValue:
           selectedStyleType.value === "blur" ? blurValue.value : undefined,
       });
-
       refetchSpecificImg();
     };
+
+    onUnmounted(() => {
+      emit("reset:style", {
+        type: "normal",
+        blurValue: 1,
+      });
+    });
 
     return {
       selectedStyleType,
@@ -116,7 +123,6 @@ export default Vue.extend({
       onStyleUpdate,
     };
   },
-  components: { TshirtPreview },
 });
 </script>
 

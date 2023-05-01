@@ -12,6 +12,7 @@
     <SecondStep
       :isFront="form.printing.isFront"
       :isBack="form.printing.isBack"
+      :form="form"
       :price="price"
       :randomImg="randomImg"
       :handleRefetch="refetchRandomImg"
@@ -23,6 +24,7 @@
       :price="price"
       v-if="step === 2"
       @update:style="onPrintingStyleUpdate"
+      @reset:style="onPrintingStyleReset"
     />
     <FourthStep
       :form="form"
@@ -60,7 +62,7 @@ import { apiService } from "@/api/apiService";
 import { paths } from "@/utils/paths";
 import { useQuery } from "@tanstack/vue-query";
 import Vue from "vue";
-import { UpdateStyleType } from "./FifthStep/FifthStep.utils";
+import { StyleType, UpdateStyleType } from "./FifthStep/FifthStep.utils";
 import FifthStep from "./FifthStep/FifthStep.vue";
 import FirstStep from "./FirstStep/FirstStep.vue";
 import { BillingInfoType } from "./FourthStep/FourthStep.utils";
@@ -133,6 +135,16 @@ export default Vue.extend({
 
   methods: {
     handlePreviousStep() {
+      const prevType = this.form.printing.style.type;
+
+      if (this.step === 2) {
+        if (prevType === "blur") {
+          this.price -= 3;
+        } else if (prevType === "grayscale") {
+          this.price -= 2;
+        }
+      }
+
       this.step--;
     },
     handleNextStep() {
@@ -155,6 +167,7 @@ export default Vue.extend({
     onBillingValueUpdate(updatedBilling: BillingInfoType) {
       this.form.billing = updatedBilling;
     },
+
     onPrintingStyleUpdate(value: UpdateStyleType) {
       const prevType = this.form.printing.style.type;
 
@@ -177,6 +190,17 @@ export default Vue.extend({
       } else if (value.type === "grayscale") {
         this.price += 2;
       }
+    },
+
+    onPrintingStyleReset(value: StyleType) {
+      this.form.printing = {
+        ...this.form.printing,
+        url: (this.$refs.imgRef as Vue & { currentImg: string }).currentImg,
+        style: {
+          type: value.type,
+          blurValue: value.blurValue ?? 1,
+        },
+      };
     },
     handleSubmitOrder() {
       console.log({ form: this.form, price: this.price });
