@@ -51,7 +51,7 @@
     <div class="printing">
       <div>
         <h3>Printing:</h3>
-        <img :src="specificImg" />
+        <img :src="specificImg.toString()" />
       </div>
       <div>
         <h3>T-shirt preview:</h3>
