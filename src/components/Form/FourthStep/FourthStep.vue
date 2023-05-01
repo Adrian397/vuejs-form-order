@@ -1,92 +1,95 @@
 <template>
   <section class="fourth-step">
     <div>
-      <div class="input-container">
-        <label for="name">Name: <span>*</span></label>
-        <input
-          type="text"
-          id="name"
-          @input="(event) => onBillingChange('name', event)"
-        />
-      </div>
-      <div class="input-container">
-        <label for="surname">Surname: <span>*</span></label>
-        <input
-          type="text"
-          id="surname"
-          @input="(event) => onBillingChange('surname', event)"
-        />
-      </div>
-      <div class="billing">
+      <div>
         <div class="input-container">
-          <label for="street">Street: <span>*</span></label>
+          <label for="name">Name: <span>*</span></label>
           <input
             type="text"
-            id="street"
-            @input="(event) => onBillingChange('street', event)"
+            id="name"
+            @input="(event) => onBillingChange('name', event)"
           />
         </div>
-        <div>
+        <div class="input-container">
+          <label for="surname">Surname: <span>*</span></label>
+          <input
+            type="text"
+            id="surname"
+            @input="(event) => onBillingChange('surname', event)"
+          />
+        </div>
+        <div class="billing">
           <div class="input-container">
-            <label for="building">Building number: <span>*</span></label>
+            <label for="street">Street: <span>*</span></label>
             <input
               type="text"
-              id="building"
-              @input="(event) => onBillingChange('buildingNumber', event)"
+              id="street"
+              @input="(event) => onBillingChange('street', event)"
             />
           </div>
-          <div class="input-container">
-            <label for="apartment">Apartment number:</label>
-            <input
-              type="text"
-              id="apartment"
-              @input="(event) => onBillingChange('apartmentNumber', event)"
-            />
+          <div>
+            <div class="input-container">
+              <label for="building">Building number: <span>*</span></label>
+              <input
+                type="text"
+                id="building"
+                @input="(event) => onBillingChange('buildingNumber', event)"
+              />
+            </div>
+            <div class="input-container">
+              <label for="apartment">Apartment number:</label>
+              <input
+                type="text"
+                id="apartment"
+                @input="(event) => onBillingChange('apartmentNumber', event)"
+              />
+            </div>
+          </div>
+          <div>
+            <div class="input-container">
+              <label for="postalCode">Postal code: <span>*</span></label>
+              <input
+                type="text"
+                id="postalCode"
+                @input="(event) => onBillingChange('postalCode', event)"
+              />
+            </div>
+            <div class="input-container">
+              <label for="town">City: <span>*</span></label>
+              <input
+                type="text"
+                id="town"
+                @input="(event) => onBillingChange('city', event)"
+              />
+            </div>
           </div>
         </div>
-        <div>
-          <div class="input-container">
-            <label for="postalCode">Postal code: <span>*</span></label>
-            <input
-              type="text"
-              id="postalCode"
-              @input="(event) => onBillingChange('postalCode', event)"
-            />
-          </div>
-          <div class="input-container">
-            <label for="town">City: <span>*</span></label>
-            <input
-              type="text"
-              id="town"
-              @input="(event) => onBillingChange('city', event)"
-            />
-          </div>
+        <div class="input-container">
+          <label for="phoneNumber">Phone:</label>
+          <input
+            type="text"
+            id="phoneNumber"
+            @input="(event) => onBillingChange('phone', event)"
+          />
+        </div>
+        <div class="input-container">
+          <label for="email">E-mail: <span>*</span></label>
+          <input
+            type="text"
+            id="email"
+            @input="(event) => onBillingChange('email', event)"
+          />
         </div>
       </div>
-      <div class="input-container">
-        <label for="phoneNumber">Phone:</label>
-        <input
-          type="text"
-          id="phoneNumber"
-          @input="(event) => onBillingChange('phone', event)"
-        />
-      </div>
-      <div class="input-container">
-        <label for="email">E-mail: <span>*</span></label>
-        <input
-          type="text"
-          id="email"
-          @input="(event) => onBillingChange('email', event)"
+      <div>
+        <TshirtPreview
+          :url="form.printing.url"
+          :isFront="form.printing.isFront"
+          :isBack="form.printing.isBack"
         />
       </div>
     </div>
-    <div>
-      <TshirtPreview
-        :url="form.printing.url"
-        :isFront="form.printing.isFront"
-        :isBack="form.printing.isBack"
-      />
-    </div>
+    <p>Price: {{ price }}</p>
   </section>
 </template>
 
@@ -102,6 +105,7 @@ export default Vue.extend({
   },
   props: {
     form: Object as PropType<FormType>,
+    price: Number,
   },
 
   methods: {
@@ -118,8 +122,17 @@ export default Vue.extend({
 
 <style scoped lang="scss">
 .fourth-step {
-  margin-bottom: 2rem;
-  display: flex;
+  & > div {
+    margin-bottom: 2rem;
+    display: flex;
+  }
+
+  p {
+    font-size: 18px;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
 }
 
 .preview-tshirt {

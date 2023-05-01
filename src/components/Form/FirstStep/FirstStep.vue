@@ -24,6 +24,7 @@
     </div>
     <h3>Printing:</h3>
     <img :src="randomImg" />
+    <p>Price: {{ price }}</p>
   </section>
 </template>
 
@@ -33,9 +34,9 @@ import Vue from "vue";
 export default Vue.extend({
   name: "FormFirstStepComponent",
   props: {
-    step: Number,
     isFront: Boolean,
     isBack: Boolean,
+    price: Number,
     randomImg: String,
   },
   data() {
@@ -63,9 +64,16 @@ export default Vue.extend({
     margin-bottom: 1rem;
   }
 
-  p {
+  p:nth-of-type(1) {
     font-size: 24px;
     color: #524f4f;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  p:nth-of-type(2) {
+    font-size: 18px;
+    color: #333;
     font-weight: 500;
     margin-bottom: 1rem;
   }

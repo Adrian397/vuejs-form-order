@@ -23,6 +23,7 @@
           <li><span>Phone:</span> {{ form.billing.phone }}</li>
           <li><span>E-mail:</span> {{ form.billing.email }}</li>
         </ul>
+        <p class="price">Price: {{ price }}</p>
       </div>
     </div>
     <div>
@@ -47,6 +48,7 @@ export default Vue.extend({
   },
   props: {
     form: Object as PropType<FormType>,
+    price: Number,
   },
   computed: {
     placeOfThePrinting(): string {
@@ -96,5 +98,12 @@ export default Vue.extend({
     text-align: center;
     color: #333;
   }
+}
+
+.price {
+  font-size: 18px;
+  color: #333;
+  font-weight: bold;
+  margin-top: 1rem;
 }
 </style>

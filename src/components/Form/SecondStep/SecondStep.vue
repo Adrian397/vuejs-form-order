@@ -25,6 +25,7 @@
         <TshirtPreview :url="currentImg" :isFront="isFront" :isBack="isBack" />
       </div>
     </div>
+    <p>Price: {{ price }}</p>
   </section>
 </template>
 
@@ -40,6 +41,7 @@ export default Vue.extend({
   props: {
     isFront: Boolean,
     isBack: Boolean,
+    price: Number,
     randomImg: String,
     handleRefetch: Function,
   },
@@ -91,6 +93,13 @@ export default Vue.extend({
     font-weight: 500;
     margin-bottom: 0.5rem;
   }
+
+  p {
+    font-size: 18px;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
 }
 
 .preview {
@@ -98,8 +107,6 @@ export default Vue.extend({
   gap: 4rem;
 
   & > div {
-    margin-bottom: 1rem;
-
     img {
       margin-bottom: 1rem;
     }

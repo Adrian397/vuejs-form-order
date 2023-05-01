@@ -3,6 +3,7 @@
     <FirstStep
       :isFront="form.printing.isFront"
       :isBack="form.printing.isBack"
+      :price="price"
       :randomImg="randomImg"
       @update:isFront="onIsFrontValueUpdate"
       @update:isBack="onIsBackValueUpdate"
@@ -11,6 +12,7 @@
     <SecondStep
       :isFront="form.printing.isFront"
       :isBack="form.printing.isBack"
+      :price="price"
       :randomImg="randomImg"
       :handleRefetch="refetchRandomImg"
       ref="imgRef"
@@ -18,15 +20,17 @@
     />
     <ThirdStep
       :form="form"
+      :price="price"
       v-if="step === 2"
       @update:style="onPrintingStyleUpdate"
     />
     <FourthStep
       :form="form"
+      :price="price"
       @update:billing="onBillingValueUpdate"
       v-if="step === 3"
     />
-    <FifthStep :form="form" v-if="step === 4" />
+    <FifthStep :form="form" :price="price" v-if="step === 4" />
     <button
       class="btn btn-prev"
       v-if="step !== 0"
@@ -37,13 +41,13 @@
     <button
       class="btn btn-next"
       @click.prevent="handleNextStep"
-      v-if="step !== 3"
+      v-if="step !== 4"
     >
       {{ nextStepText }}
     </button>
     <button
       class="btn btn-next"
-      v-if="step === 3"
+      v-if="step === 4"
       @click.prevent="handleSubmitOrder"
     >
       Submit order
@@ -99,6 +103,7 @@ export default Vue.extend({
           email: "",
         },
       },
+      price: 0,
     };
   },
   setup() {
@@ -136,18 +141,23 @@ export default Vue.extend({
           this.$refs.imgRef as Vue & { currentImg: string }
         ).currentImg;
       }
+
       this.step++;
     },
     onIsFrontValueUpdate(value: boolean) {
       this.form.printing.isFront = value;
+      this.price += value ? 10 : -10;
     },
     onIsBackValueUpdate(value: boolean) {
       this.form.printing.isBack = value;
+      this.price += value ? 10 : -10;
     },
     onBillingValueUpdate(updatedBilling: BillingInfoType) {
       this.form.billing = updatedBilling;
     },
     onPrintingStyleUpdate(value: UpdateStyleType) {
+      const prevType = this.form.printing.style.type;
+
       this.form.printing = {
         ...this.form.printing,
         url: value.url,
@@ -156,10 +166,24 @@ export default Vue.extend({
           blurValue: value.blurValue ?? 1,
         },
       };
+      if (prevType === "blur") {
+        this.price -= 3;
+      } else if (prevType === "grayscale") {
+        this.price -= 2;
+      }
+
+      if (value.type === "blur") {
+        this.price += 3;
+      } else if (value.type === "grayscale") {
+        this.price += 2;
+      }
     },
     handleSubmitOrder() {
-      console.log(this.form);
-      localStorage.setItem("form", JSON.stringify(this.form));
+      console.log({ form: this.form, price: this.price });
+      localStorage.setItem(
+        "form",
+        JSON.stringify({ form: this.form, price: this.price })
+      );
       this.$router.replace(paths.summary);
     },
   },

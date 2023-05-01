@@ -1,16 +1,16 @@
 <template>
-  <div class="wrapper" v-if="Object.keys(parsedForm).length > 0">
+  <div class="wrapper" v-if="Object.keys(parsedOrder).length > 0">
     <h1>Thank you, your order has been placed!</h1>
-    <Summary :form="parsedForm" />
+    <Summary :form="parsedOrder.form" :price="parsedOrder.price" />
     <button @click="handleBackToHomePage">Go to home page</button>
   </div>
 </template>
 
 <script lang="ts">
-import { FormType } from "@/components/Form/FifthStep/FifthStep.utils";
 import Summary from "@/components/Form/Summary/Summary.vue";
 import { paths } from "@/utils/paths";
 import Vue from "vue";
+import { OrderType } from "./OrderPlaced.utils";
 
 export default Vue.extend({
   name: "OrderPlacedPage",
@@ -19,7 +19,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      parsedForm: {} as FormType,
+      parsedOrder: {} as OrderType,
     };
   },
 
@@ -32,7 +32,7 @@ export default Vue.extend({
   mounted() {
     const formJson = localStorage.getItem("form");
     if (formJson) {
-      this.parsedForm = JSON.parse(formJson);
+      this.parsedOrder = JSON.parse(formJson);
     }
   },
 });

@@ -1,6 +1,6 @@
 <template>
   <section>
-    <Summary :form="form" />
+    <Summary :form="form" :price="price" />
   </section>
 </template>
 
@@ -16,6 +16,7 @@ export default Vue.extend({
   },
   props: {
     form: Object as PropType<FormType>,
+    price: Number,
   },
 });
 </script>

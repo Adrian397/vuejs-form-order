@@ -39,10 +39,7 @@
           min="1"
           max="10"
           v-model="blurValue"
-          v-if="
-            //@ts-ignore
-            selectedStyleType === 'blur'
-          "
+          v-if="selectedStyleType === 'blur'"
           @input="onStyleUpdate"
         />
       </div>
@@ -51,7 +48,7 @@
     <div class="printing">
       <div>
         <h3>Printing:</h3>
-        <img :src="specificImg.toString()" />
+        <img :src="specificImg" />
       </div>
       <div>
         <h3>T-shirt preview:</h3>
@@ -62,6 +59,7 @@
         />
       </div>
     </div>
+    <p>Price: {{ price }}</p>
   </section>
 </template>
 
@@ -76,6 +74,7 @@ export default Vue.extend({
   name: "FormThirdStepComponent",
   props: {
     form: Object as PropType<FormType>,
+    price: Number,
   },
   setup({ form }, { emit }) {
     const selectedStyleType = ref(form.printing.style.type);
@@ -142,6 +141,12 @@ export default Vue.extend({
         margin-right: 0.5rem;
       }
     }
+  }
+  p {
+    font-size: 18px;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 1rem;
   }
 }
 
