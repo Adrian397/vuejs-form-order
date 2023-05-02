@@ -3,7 +3,6 @@ const apiServiceDef = () => {
     const response = await fetch("https://picsum.photos/150");
     const result = response.url;
 
-
     return result;
   };
 

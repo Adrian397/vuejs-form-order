@@ -1,6 +1,10 @@
 <template>
   <section>
     <Summary :form="form" :price="price" />
+    <button class="btn btn-prev" @click="onPrevStepChange">
+      Previous step
+    </button>
+    <button class="btn btn-next" type="submit">Submit order</button>
   </section>
 </template>
 
@@ -17,6 +21,11 @@ export default Vue.extend({
   props: {
     form: Object as PropType<FormType>,
     price: Number,
+  },
+  methods: {
+    onPrevStepChange() {
+      this.$emit("update:prevStep");
+    },
   },
 });
 </script>

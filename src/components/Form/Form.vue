@@ -1,66 +1,61 @@
 <template>
-  <form>
-    <FirstStep
-      :isFront="form.printing.isFront"
-      :isBack="form.printing.isBack"
-      :price="price"
-      :randomImg="randomImg"
-      @update:isFront="onIsFrontValueUpdate"
-      @update:isBack="onIsBackValueUpdate"
-      v-if="step === 0"
-    />
-    <SecondStep
-      :isFront="form.printing.isFront"
-      :isBack="form.printing.isBack"
-      :form="form"
-      :price="price"
-      :randomImg="randomImg"
-      :handleRefetch="refetchRandomImg"
-      ref="imgRef"
-      v-if="step === 1"
-    />
-    <ThirdStep
-      :form="form"
-      :price="price"
-      v-if="step === 2"
-      @update:style="onPrintingStyleUpdate"
-      @reset:style="onPrintingStyleReset"
-    />
-    <FourthStep
-      :form="form"
-      :price="price"
-      @update:billing="onBillingValueUpdate"
-      v-if="step === 3"
-    />
-    <FifthStep :form="form" :price="price" v-if="step === 4" />
-    <button
-      class="btn btn-prev"
-      v-if="step !== 0"
-      @click.prevent="handlePreviousStep"
-    >
-      Previous step
-    </button>
-    <button
-      class="btn btn-next"
-      @click.prevent="handleNextStep"
-      v-if="step !== 4"
-    >
-      {{ nextStepText }}
-    </button>
-    <button
-      class="btn btn-next"
-      v-if="step === 4"
-      @click.prevent="handleSubmitOrder"
-    >
-      Submit order
-    </button>
-  </form>
+  <ValidationObserver v-slot="{ handleSubmit, invalid }">
+    <form @submit.prevent="handleSubmit(onSubmit)">
+      <FirstStep
+        :isFront="form.printing.isFront"
+        :isBack="form.printing.isBack"
+        :price="price"
+        :randomImg="randomImg"
+        @update:isFront="onIsFrontValueUpdate"
+        @update:isBack="onIsBackValueUpdate"
+        @update:nextStep="onNextStepUpdate"
+        v-if="step === 0"
+      />
+      <SecondStep
+        :isFront="form.printing.isFront"
+        :isBack="form.printing.isBack"
+        :form="form"
+        :price="price"
+        :randomImg="randomImg"
+        :handleRefetch="refetchRandomImg"
+        @update:nextStep="onNextStepUpdate"
+        @update:prevStep="onPreviousStepUpdate"
+        ref="imgRef"
+        v-if="step === 1"
+      />
+      <ThirdStep
+        :form="form"
+        :price="price"
+        @update:style="onPrintingStyleUpdate"
+        @reset:style="onPrintingStyleReset"
+        @update:nextStep="onNextStepUpdate"
+        @update:prevStep="onPreviousStepUpdate"
+        v-if="step === 2"
+      />
+      <FourthStep
+        :form="form"
+        :price="price"
+        :invalid="invalid"
+        @update:billing="onBillingValueUpdate"
+        @update:nextStep="onNextStepUpdate"
+        @update:prevStep="onPreviousStepUpdate"
+        v-if="step === 3"
+      />
+      <FifthStep
+        :form="form"
+        :price="price"
+        @update:prevStep="onPreviousStepUpdate"
+        v-if="step === 4"
+      />
+    </form>
+  </ValidationObserver>
 </template>
 
 <script lang="ts">
 import { apiService } from "@/api/apiService";
 import { paths } from "@/utils/paths";
 import { useQuery } from "@tanstack/vue-query";
+import { ValidationObserver } from "vee-validate";
 import Vue from "vue";
 import { StyleType, UpdateStyleType } from "./FifthStep/FifthStep.utils";
 import FifthStep from "./FifthStep/FifthStep.vue";
@@ -78,6 +73,7 @@ export default Vue.extend({
     ThirdStep,
     FourthStep,
     FifthStep,
+    ValidationObserver,
   },
   data() {
     return {
@@ -119,22 +115,9 @@ export default Vue.extend({
 
     return { randomImg, refetchRandomImg };
   },
-  computed: {
-    nextStepText(): string {
-      return this.step === 0
-        ? "Next step"
-        : this.step === 1
-        ? "Next step"
-        : this.step === 2
-        ? "Proceed to checkout"
-        : this.step === 3
-        ? "Go to summary"
-        : "";
-    },
-  },
 
   methods: {
-    handlePreviousStep() {
+    onPreviousStepUpdate() {
       const prevType = this.form.printing.style.type;
 
       if (this.step === 2) {
@@ -147,7 +130,7 @@ export default Vue.extend({
 
       this.step--;
     },
-    handleNextStep() {
+    onNextStepUpdate() {
       if (this.step === 1 && this.$refs.imgRef) {
         this.form.printing.url = (
           this.$refs.imgRef as Vue & { currentImg: string }
@@ -167,7 +150,6 @@ export default Vue.extend({
     onBillingValueUpdate(updatedBilling: BillingInfoType) {
       this.form.billing = updatedBilling;
     },
-
     onPrintingStyleUpdate(value: UpdateStyleType) {
       const prevType = this.form.printing.style.type;
 
@@ -191,7 +173,6 @@ export default Vue.extend({
         this.price += 2;
       }
     },
-
     onPrintingStyleReset(value: StyleType) {
       this.form.printing = {
         ...this.form.printing,
@@ -202,7 +183,7 @@ export default Vue.extend({
         },
       };
     },
-    handleSubmitOrder() {
+    onSubmit() {
       console.log({ form: this.form, price: this.price });
       localStorage.setItem(
         "form",
@@ -214,7 +195,7 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .btn {
   padding: 0.7rem;
   font-weight: bold;
@@ -222,6 +203,11 @@ export default Vue.extend({
   border-radius: 5px;
   color: white;
   cursor: pointer;
+}
+
+.btn:disabled {
+  background-color: #7e7e7e;
+  cursor: not-allowed;
 }
 
 .btn-next {

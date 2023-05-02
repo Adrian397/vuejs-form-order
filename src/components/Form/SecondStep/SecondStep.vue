@@ -26,6 +26,10 @@
       </div>
     </div>
     <p>Price: {{ price }}</p>
+    <button class="btn btn-prev" @click="onPrevStepChange">
+      Previous step
+    </button>
+    <button class="btn btn-next" @click="onNextStepChange">Next step</button>
   </section>
 </template>
 
@@ -65,21 +69,25 @@ export default Vue.extend({
       this.previousImg = this.currentImg;
       this.handleRefetch();
       this.currentImg = this.randomImg;
-      // this.$emit("update:url", this.currentImg);
     },
     handleGoBackward() {
       if (this.previousImg) {
         this.currentImg = this.previousImg;
         this.previousImg = "";
-        // this.$emit("update:url", this.currentImg);
       }
     },
     handleGoForward() {
       if (this.currentImg !== this.randomImg) {
         this.previousImg = this.currentImg;
         this.currentImg = this.randomImg;
-        // this.$emit("update:url", this.currentImg);
       }
+    },
+    onPrevStepChange() {
+      this.$emit("update:prevStep");
+    },
+
+    onNextStepChange() {
+      this.$emit("update:nextStep");
     },
   },
 });

@@ -25,6 +25,9 @@
     <h3>Printing:</h3>
     <img :src="randomImg" />
     <p>Price: {{ price }}</p>
+    <button class="btn btn-next" :disabled="!isValid" @click="onNextStepChange">
+      Next step
+    </button>
   </section>
 </template>
 
@@ -39,18 +42,29 @@ export default Vue.extend({
     price: Number,
     randomImg: String,
   },
+
   data() {
     return {
       isFrontChecked: this.isFront,
       isBackChecked: this.isBack,
     };
   },
+
   methods: {
     onIsFrontValueChange() {
       this.$emit("update:isFront", this.isFrontChecked);
     },
     onIsBackValueChange() {
       this.$emit("update:isBack", this.isBackChecked);
+    },
+    onNextStepChange() {
+      this.$emit("update:nextStep");
+    },
+  },
+
+  computed: {
+    isValid(): boolean {
+      return this.isFrontChecked || this.isBackChecked;
     },
   },
 });

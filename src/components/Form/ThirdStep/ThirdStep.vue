@@ -60,6 +60,12 @@
       </div>
     </div>
     <p>Price: {{ price }}</p>
+    <button class="btn btn-prev" @click="onPrevStepChange">
+      Previous step
+    </button>
+    <button class="btn btn-next" @click="onNextStepChange">
+      Proceed to checkout
+    </button>
   </section>
 </template>
 
@@ -109,6 +115,14 @@ export default Vue.extend({
       refetchSpecificImg();
     };
 
+    const onPrevStepChange = () => {
+      emit("update:prevStep");
+    };
+
+    const onNextStepChange = () => {
+      emit("update:nextStep");
+    };
+
     onUnmounted(() => {
       emit("reset:style", {
         type: "normal",
@@ -121,6 +135,8 @@ export default Vue.extend({
       blurValue,
       specificImg,
       onStyleUpdate,
+      onPrevStepChange,
+      onNextStepChange,
     };
   },
 });
